@@ -10,6 +10,8 @@ import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,10 +41,11 @@ import java.util.ArrayList;
  * Use the {@link BoardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BoardFragment extends Fragment {
+public class BoardFragment extends Fragment implements BoardListAdapter.OnLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
     ArrayList<Item> myItem;
     RecyclerView recyclerView;
     BoardListAdapter boardListAdapter;
+    private SwipeRefreshLayout swipeRefresh;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -91,25 +94,23 @@ public class BoardFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-//        for(int i = 0 ; i < 30000; i ++){
-//            myItem.add(new Item("my Contents no : "+i,"mywriter","myDate","myTopic no : "+i,"myTid"));
-//
-//        }
-//        myItem.add(new Item("my Contents","mywriter","myDate","myTopic","myTid"));
 
-        myItem = new ArrayList<>();
+        myItem = new ArrayList<Item>();
+
 
         View inflate = inflater.inflate(R.layout.fragment_board, container, false);
+        swipeRefresh=(SwipeRefreshLayout)inflate.findViewById(R.id.swipeRefresh);
         recyclerView = (RecyclerView)inflate.findViewById(R.id.recyclerView);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        boardListAdapter =new BoardListAdapter();
-
-        boardListAdapter.setItems(myItem);
-
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        boardListAdapter = new BoardListAdapter(this);
+        boardListAdapter.setLinearLayoutManager(mLayoutManager);
+        boardListAdapter.setRecyclerView(recyclerView);
         recyclerView.setAdapter(boardListAdapter);
-        callBindRecycleView();
+        swipeRefresh.setOnRefreshListener(this);
+
+
+       // callBindRecycleView();
 
         final GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -153,6 +154,62 @@ public class BoardFragment extends Fragment {
     public void callBindRecycleView(){
         new BindRecycleView(getActivity()).execute();
     }
+
+    @Override
+    public void onLoadMore() {
+        Log.d("MainActivity_boardFrag","onLoadMore");
+        boardListAdapter.setProgressMore(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                myItem.clear();
+                boardListAdapter.setProgressMore(false);
+                int start = boardListAdapter.getItemCount();
+                int end = start + 15;
+                for (int i = start + 1; i <= end; i++) {
+                    myItem.add(new Item("Item " + i,"item"+i,"item"+i,"item"+i,i+""));
+                }
+                boardListAdapter.addItemMore(myItem);
+                boardListAdapter.setMoreLoading(false);
+            }
+        },2000);
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.d("MainActivity_boardFrag","onRefresh");
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                swipeRefresh.setRefreshing(false);
+                loadData();
+
+            }
+        },2000);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("MainActivity_","onStart");
+        loadData();
+    }
+
+    private void loadData() {
+        Log.d("MainActivity_boardFrag","LoadData");
+        myItem.clear();
+        for (int i = 1; i <= 20; i++) {
+            myItem.add(new Item("Item " + i,"item"+i,"item"+i,"item"+i,"id"));
+        }
+        boardListAdapter.addAll(myItem);
+    }
+
+
+
+
+
+
 
 
     class BindRecycleView extends AsyncTask<Void, Void, String> {
@@ -249,6 +306,16 @@ public class BoardFragment extends Fragment {
         recyclerView.setAdapter(boardListAdapter);
 
     }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -11,8 +11,27 @@ public class Item {
     String topic;
     String tid;
 
+    public String getContents() {
+        return contents;
+    }
 
-    public  Item(String contents,String writer, String date, String topic,String tid){
+    public String getWriter() {
+        return writer;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public String getTid() {
+        return tid;
+    }
+
+    public  Item(String contents, String writer, String date, String topic, String tid){
         this.contents = contents;
         this.writer = writer;
         this. date = date;
