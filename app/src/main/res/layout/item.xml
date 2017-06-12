@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+
+    >
+
+    <TextView
+
+        android:id="@+id/t_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/myitembackgroudn"
+        android:textColor="#FFFFFF"
+        android:paddingBottom="5dp"
+        android:text="Topic"
+        android:textStyle="bold"
+
+        />
+
+    <TextView
+        android:id="@+id/t_writer"
+        android:background="@color/myitembackgroudn"
+        android:layout_width="421dp"
+        android:layout_height="wrap_content"
+
+        android:paddingBottom="5dp"
+        android:textColor="#FFFFFF"
+
+        android:text="Writer"
+        android:textStyle="bold"
+
+        />
+
+    <TextView
+        android:id="@+id/t_date"
+        android:textColor="#FFFFFF"
+        android:background="@color/myitembackgroudn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:hint="Writer"
+        android:paddingBottom="5dp"
+        android:text="Date"
+        android:textStyle="bold"
+
+        />
+
+
+</LinearLayout>
